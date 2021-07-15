@@ -1,16 +1,17 @@
-const executeCommand = require('../commands/execute-command');
+const runConsoleCommand = require('../commands/run-console-command');
 const { isConsoleCommand } = require('../tools/tools');
 const Node = require('./node');
 
 module.exports = class Tree {
-	constructor(task, availableTasksList) {
+	constructor(task, availableTasksList, settings) {
 		this.root = new Node(task);
 		this.initializeTree(this.root, availableTasksList);
 		this.preparePipeForTaskExecution();
+		this.settings = settings;
 	}
 
-	executeRootCommand() {
-		this.root.execute();
+	async executeRootCommand() {
+		return await this.root.execute();
 	}
 
 	preparePipeForTaskExecution(siblingNodes = this.collectEndNodes()) {
@@ -26,7 +27,12 @@ module.exports = class Tree {
 	convertCommandToFunction(node) {
 		const commandConfiguration = node.value;
 		if (isConsoleCommand(node.value)) {
-			return async () => await executeCommand(commandConfiguration.path, commandConfiguration);
+			return async () => await runConsoleCommand(
+				commandConfiguration.path,
+				commandConfiguration,
+				this?.settings?.handleOutputMessage,
+				this?.settings?.handleOutputError
+			);
 		}
 		if (commandConfiguration.shouldRunCommandsInParallel === true) {
 			return async () => await Promise.all(node.children.map(childNode => childNode.execute()));

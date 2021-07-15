@@ -1,7 +1,8 @@
 import { isConsoleCommand } from 'task-runner-nvk-js/tools/tools';
 import { ComplexCommandsListComponent } from '../../components/ComplexCommandsList/ComplexCommandsList';
 import { ConsoleCommandsListComponent } from '../../components/ConsoleCommandsList/ConsoleCommandsList';
-import config from 'task-runner-nvk-js/config/config-example.json';
+// import config from 'task-runner-nvk-js/config/config-example.json';
+import config from 'task-runner-nvk-js/config/config-home.json';
 
 export function CommandBrowserComponent() {
 	const awailableCommands = config.commandPresets;

@@ -1,0 +1,76 @@
+{
+	"commandPresets": [
+		{
+			"name":"changeDirictory",
+			"command": "cd",
+			"parameters": null,
+			"isConsoleCommand": true
+		},
+		{
+			"name": "openInVsCode",
+			"command": "code",
+			"parameters": ["."],
+			"isConsoleCommand": true
+		},
+		{
+			"name":"npmInstall",
+			"command": "npm",
+			"parameters": ["install"],
+			"isConsoleCommand": true
+		},
+		{
+			"name": "npmRunStart",
+			"command": "npm",
+			"parameters": ["run", "start"],
+			"isConsoleCommand": true
+		},
+		{
+			"name":"gitSwitchToDevelop",
+			"command": "git",
+			"parameters": ["switch","develop"],
+			"isConsoleCommand": true
+		},
+		{
+			"name":"gitPull",
+			"command": "git",
+			"parameters": ["pull"],
+			"isConsoleCommand": true
+		},
+		{
+			"name": "runTasksTracker",
+			"shouldRunCommandsInParallel": true,
+			"commands": [
+				{
+					"name": "runTasksTrackerFrontEnd"
+				},
+				{
+					"name": "runTasksTrackerBackEnd"
+				}
+			]
+		},
+		{
+			"name": "runTasksTrackerFrontEnd",
+			"path": "C:\\Projects\\TasksTracker\\FrontEnd\\TasksTracker",
+			"commands": [
+				{
+					"name": "npmInstall"
+				},
+				{
+					"name": "npmRunStart"
+				}
+			]
+		},
+		{
+			"name": "runTasksTrackerBackEnd",
+			"path": "C:\\Projects\\TasksTracker\\BackEnd\\TasksTracker",
+			"commands": [
+				{
+					"name": "npmInstall"
+				},
+				{
+					"name": "npmRunStart"
+				}
+			]
+		}
+	]
+}

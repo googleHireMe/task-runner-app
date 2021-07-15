@@ -2,23 +2,27 @@ const path = require('path');
 const { app, BrowserWindow } = require('electron');
 const { ipcMain } = require('electron')
 const isDev = require('electron-is-dev');
-const Tree = require('task-runner-nvk-js/tools/tree');
+const { runTask } = require('task-runner-nvk-js/public/core');
 
-app.whenReady().then(createWindow);
+let window = null;
+app.whenReady()
+  .then(() => createWindow(window));
 
 app.on('window-all-closed', () => {
-	app.quit();
+  app.quit();
 });
 
 ipcMain.handle('run-command', async (event, { command, allCommands }) => {
   console.log({ allCommands, command });
-  const tree = new Tree(command, allCommands);
-  const result = await tree.executeRootCommand();
+  const result = await runTask(command, allCommands, (data, path, commandConfiguration) => {
+    data = data.toString();
+    window.webContents.send('log', {data, path, commandConfiguration});
+  });
   return result;
 });
 
 function createWindow() {
-  const window = new BrowserWindow({
+  window = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {

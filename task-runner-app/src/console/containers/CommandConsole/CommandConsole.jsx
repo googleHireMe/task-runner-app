@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import config from 'task-runner-nvk-js/config/config-example.json';
+// import config from 'task-runner-nvk-js/config/config-example.json';
+import config from 'task-runner-nvk-js/config/config-home.json';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { isConsoleCommand } from 'task-runner-nvk-js/tools/tools';
@@ -7,11 +8,23 @@ import { isConsoleCommand } from 'task-runner-nvk-js/tools/tools';
 export function CommandConsoleComponent() {
 	const allCommands = config.commandPresets;
 	const awailableCommands = config.commandPresets.filter(command => !isConsoleCommand(command));
+	const { desktopApi } = window;
 
-	const [desktopApi, setDesktopApi] = useState(null); 
+	const [logs, setLogs] = useState([]);
+
+	const logData = (event, runnerOutput) => {
+		const { data, path, commandConfiguration } = runnerOutput;
+		const { name, command, parameters } = commandConfiguration;
+		const dirName = path.split('\\').pop();
+		const tag = `${dirName}-${name}`;
+		const formattedOutput = `[${tag}]: ${data}`;
+		console.log('formattedOutput', formattedOutput);
+		setLogs((logs) => [...logs, formattedOutput]);
+		console.log(logs);
+	}
 	useEffect(() => {
-		setDesktopApi(window.desktopApi);
-	}, []);
+		desktopApi.receive('log', logData);
+	}, [desktopApi]);
 
 	const [currentCommand, setCurrentCommand] = useState({});
 	const [isCommandConsoleDisabled, setIsCommandConsoleDisabled] = useState(false);
@@ -39,6 +52,12 @@ export function CommandConsoleComponent() {
 				style={{ width: 300 }}
 				renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" onKeyDown={handleKeyDown} />}
 			/>
+			{logs.map(log => (
+				<div>
+					{log}
+				</div>
+			))}
 		</>
+
 	);
 }
