@@ -1,4 +1,6 @@
 const runTask = require('../commands/run-task');
+const runConsoleCommand = require('../commands/run-console-command');
+
 const { 
   logConsoleMessage: handleOutputMessage,
   logConsoleError: handleOutputError,
@@ -10,6 +12,7 @@ const {
 
 module.exports = {
   runTask,
+	runConsoleCommand,
   handleOutputMessage,
   handleOutputError,
 	coloredLog,

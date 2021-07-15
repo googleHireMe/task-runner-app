@@ -12,16 +12,22 @@ export function CommandConsoleComponent() {
 
 	const [logs, setLogs] = useState([]);
 
-	const logData = (event, runnerOutput) => {
-		const { data, path, commandConfiguration } = runnerOutput;
-		const { name, command, parameters } = commandConfiguration;
-		const dirName = path.split('\\').pop();
-		const tag = `${dirName}-${name}`;
-		const formattedOutput = `[${tag}]: ${data}`;
-		console.log('formattedOutput', formattedOutput);
-		setLogs((logs) => [...logs, formattedOutput]);
-		console.log(logs);
+	// const logData = (event, runnerOutput) => {
+	// 	const { data, path, commandConfiguration } = runnerOutput;
+	// 	const { name, command, parameters } = commandConfiguration;
+	// 	const dirName = path.split('\\').pop();
+	// 	const tag = `${dirName}-${name}`;
+	// 	const formattedOutput = `[${tag}]: ${data}`;
+	// 	console.log('formattedOutput', formattedOutput);
+	// 	setLogs((logs) => [...logs, formattedOutput]);
+	// 	console.log(logs);
+	// }
+
+	const logData = (event, processLog) => {
+		console.log('processLog', processLog);
+		setLogs((logs) => [...logs, processLog]);
 	}
+
 	useEffect(() => {
 		desktopApi.receive('log', logData);
 	}, [desktopApi]);

@@ -2,7 +2,10 @@ const path = require('path');
 const { app, BrowserWindow } = require('electron');
 const { ipcMain } = require('electron')
 const isDev = require('electron-is-dev');
-const { runTask } = require('task-runner-nvk-js/public/core');
+const { runConsoleCommand } = require('task-runner-nvk-js/public/core');
+const process = require('process');
+const childProcess = require('child_process');
+const { spawnProcess } = require('task-runner-nvk-js/tools/tools');
 
 let window = null;
 app.whenReady()
@@ -12,13 +15,33 @@ app.on('window-all-closed', () => {
   app.quit();
 });
 
+// ipcMain.handle('run-command', async (event, { command, allCommands }) => {
+//   console.log({ allCommands, command });
+//   const result = await runTask(command, allCommands, (data, path, commandConfiguration) => {
+//     data = data.toString();
+//     window.webContents.send('log', {data, path, commandConfiguration});
+//   });
+//   return result;
+// });
+
 ipcMain.handle('run-command', async (event, { command, allCommands }) => {
   console.log({ allCommands, command });
-  const result = await runTask(command, allCommands, (data, path, commandConfiguration) => {
-    data = data.toString();
-    window.webContents.send('log', {data, path, commandConfiguration});
-  });
-  return result;
+  const sendLogToTheClient = (data) => {
+    console.log(`${data}`);
+    window.webContents.send('log', `${data}`);
+  }
+  const scriptToRunUserCommandPath = require.resolve('task-runner-nvk-js/public/run-task-executable');
+  console.log('path', scriptToRunUserCommandPath);
+  const nodeCommand = 'node';
+  const parameters = [ `${JSON.stringify(command)}`, `${JSON.stringify(allCommands)}`];
+  //const process = spawnProcess(path, nodeCommand, parameters);
+  const childProcessRunningUserCommand = childProcess.fork(scriptToRunUserCommandPath, parameters)
+  childProcessRunningUserCommand.on('message', sendLogToTheClient);
+  childProcessRunningUserCommand.on('error', sendLogToTheClient);
+  setTimeout(() => {
+    childProcessRunningUserCommand.kill();
+    sendLogToTheClient('KIIIIIILLED');
+  }, 8000)
 });
 
 function createWindow() {
