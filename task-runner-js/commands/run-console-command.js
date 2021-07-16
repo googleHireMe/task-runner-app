@@ -15,8 +15,8 @@ module.exports = async function runConsoleCommand(
 	return new Promise((resolve, reject) => {
 		coloredLog(`[${tag}]: Running ${command} ${parameters.join(' ')}`, logColor);
 		const installPackagesProcess = spawnProcess(path, command, parameters);
-		installPackagesProcess.stdout.on('data', data => { handleOutputMessage(data, path, commandConfiguration); });
-		installPackagesProcess.stderr.on('data', data => { handleOutputError(data, path, commandConfiguration); });
+		installPackagesProcess.stdout.on('data', processOutput => { handleOutputMessage({ processOutput, path, commandConfiguration }); });
+		installPackagesProcess.stderr.on('data', processOutput => { handleOutputError({ processOutput, path, commandConfiguration }); });
 		installPackagesProcess.once('exit', () => { resolve(); });
 		installPackagesProcess.once('error', () => { reject(); });
 	});

@@ -10,6 +10,8 @@ import { CommandBrowserComponent } from '../browser/containers/CommandBrowser/Co
 import { CommandConsoleComponent } from '../console/containers/CommandConsole/CommandConsole';
 import { AppHeader } from '../shared-components/AppHeader/AppHeader';
 import teal from '@material-ui/core/colors/teal';
+import { store } from '../store/store';
+import { Provider } from 'react-redux';
 
 const darkTheme = createTheme({
   palette: {
@@ -36,17 +38,19 @@ function App() {
 
   return (
     <div id="CommandApp">
-      <ThemeProvider theme={darkTheme}>
-        <CssBaseline />
-        <BrowserRouter>
-          <AppHeader routes={routes} />
-          <Switch>
-            <Route path="/console" component={CommandConsoleComponent} />
-            <Route path="/browse-commands" component={CommandBrowserComponent} />            
-            <Route path="/" component={CommandConsoleComponent} />
-          </Switch>
-        </BrowserRouter>
-      </ThemeProvider>
+      <Provider store={store}>
+        <ThemeProvider theme={darkTheme}>
+          <CssBaseline />
+          <BrowserRouter>
+            <AppHeader routes={routes} />
+            <Switch>
+              <Route path="/console" component={CommandConsoleComponent} />
+              <Route path="/browse-commands" component={CommandBrowserComponent} />
+              <Route path="/" component={CommandConsoleComponent} />
+            </Switch>
+          </BrowserRouter>
+        </ThemeProvider>
+      </Provider>
     </div>
   );
 }

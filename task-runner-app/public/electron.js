@@ -26,22 +26,26 @@ app.on('window-all-closed', () => {
 
 ipcMain.handle('run-command', async (event, { command, allCommands }) => {
   console.log({ allCommands, command });
-  const sendLogToTheClient = (data) => {
-    console.log(`${data}`);
-    window.webContents.send('log', `${data}`);
+  const sendLogObjectToTheClient = ({outputObject, processId}) => {
+    const { processOutput, processExecutionPath } = outputObject;
+    console.log('outputObject',outputObject);
+    window.webContents.send('log', {
+      processOutput,
+      processExecutionPath,
+      processId
+    });
   }
   const scriptToRunUserCommandPath = require.resolve('task-runner-nvk-js/public/run-task-executable');
-  console.log('path', scriptToRunUserCommandPath);
-  const nodeCommand = 'node';
-  const parameters = [ `${JSON.stringify(command)}`, `${JSON.stringify(allCommands)}`];
-  //const process = spawnProcess(path, nodeCommand, parameters);
+  const parameters = [`${JSON.stringify(command)}`, `${JSON.stringify(allCommands)}`];
   const childProcessRunningUserCommand = childProcess.fork(scriptToRunUserCommandPath, parameters)
-  childProcessRunningUserCommand.on('message', sendLogToTheClient);
-  childProcessRunningUserCommand.on('error', sendLogToTheClient);
-  setTimeout(() => {
-    childProcessRunningUserCommand.kill();
-    sendLogToTheClient('KIIIIIILLED');
-  }, 8000)
+  childProcessRunningUserCommand.on('message', (outputObject) => sendLogObjectToTheClient({ outputObject, processId: childProcessRunningUserCommand.pid }));
+  childProcessRunningUserCommand.on('error', (outputObject) => sendLogObjectToTheClient({ outputObject, processId: childProcessRunningUserCommand.pid }));
+  console.log('returning childProcessRunningUserCommand', childProcessRunningUserCommand);
+  return childProcessRunningUserCommand.pid;
+});
+
+ipcMain.handle('kill-process', async (event, processId) => {
+  return await process.kill(processId);
 });
 
 function createWindow() {

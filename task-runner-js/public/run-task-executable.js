@@ -7,6 +7,9 @@ const command = JSON.parse(arguments[2]);
 const allCommands = JSON.parse(arguments[3]);
 process.send(`command: ${command}`);
 process.send(`allCommands: ${allCommands}`);
-handleOutputMessage = (data) => { process.send(`HEEEY: ${data}`); }
+handleOutputMessage = ({ processOutput, path, commandConfiguration }) => {
+  processOutput = processOutput.toString();
+  process.send({ processOutput, path, commandConfiguration }); 
+}
 runTask(command, allCommands, handleOutputMessage)
   .catch(error => process.send('Error occured:', error));
