@@ -27,12 +27,14 @@ app.on('window-all-closed', () => {
 ipcMain.handle('run-command', async (event, { command, allCommands }) => {
   console.log({ allCommands, command });
   const sendLogObjectToTheClient = ({outputObject, processId}) => {
-    const { processOutput, processExecutionPath } = outputObject;
+    const { processOutput, path: processExecutionPath, commandConfiguration, isError } = outputObject;
     console.log('outputObject',outputObject);
     window.webContents.send('log', {
       processOutput,
       processExecutionPath,
-      processId
+      processId,
+      commandConfiguration,
+      isError
     });
   }
   const scriptToRunUserCommandPath = require.resolve('task-runner-nvk-js/public/run-task-executable');

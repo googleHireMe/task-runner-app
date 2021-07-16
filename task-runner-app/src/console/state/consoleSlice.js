@@ -11,12 +11,12 @@ export const consoleSlice = createSlice({
 			state.runningCommands.push(action.payload);
 		},
 		updateLogsOfRunningCommand: (state, { payload }) => {
-			const { processId, processExecutionPath, processOutput } = payload;
-			console.log('processExecutionPath redux', processExecutionPath);
+			const { processId, processExecutionPath, processOutput, commandConfiguration, isError } = payload;
+			console.log('isError redux', isError);
 			const commandOwningLog = state.runningCommands.find(command => command.processId === processId);
 			if (commandOwningLog) {
 				if (!commandOwningLog.logObjects) { commandOwningLog.logObjects = []; }
-				commandOwningLog.logObjects.push({ processExecutionPath, processOutput });
+				commandOwningLog.logObjects.push({ processExecutionPath, processOutput, commandConfiguration, isError });
 			}
 		},
 		incrementByAmount: (state, action) => {

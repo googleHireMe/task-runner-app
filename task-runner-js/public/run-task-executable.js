@@ -11,5 +11,10 @@ handleOutputMessage = ({ processOutput, path, commandConfiguration }) => {
   processOutput = processOutput.toString();
   process.send({ processOutput, path, commandConfiguration }); 
 }
-runTask(command, allCommands, handleOutputMessage)
+handleOutputError = ({ processOutput, path, commandConfiguration }) => {
+  processOutput = processOutput.toString();
+  process.send({ processOutput, path, commandConfiguration, isError: true }); 
+}
+
+runTask(command, allCommands, handleOutputMessage, handleOutputError)
   .catch(error => process.send('Error occured:', error));

@@ -15,7 +15,7 @@ import { decrement, updateLogsOfRunningCommand, updateRunningCommands } from '..
 
 export function CommandConsoleComponent() {
 	const runningCommands = useSelector(state => state.console.runningCommands)
-  const dispatch = useDispatch();
+	const dispatch = useDispatch();
 
 	const allCommands = config.commandPresets;
 	const awailableCommands = config.commandPresets.filter(command => !isConsoleCommand(command));
@@ -36,8 +36,10 @@ export function CommandConsoleComponent() {
 	const logData = (event, {
 		processOutput,
 		processExecutionPath,
-		processId
-	}) => dispatch(updateLogsOfRunningCommand({ processId, processExecutionPath, processOutput }));
+		processId,
+		commandConfiguration, 
+		isError
+	}) => dispatch(updateLogsOfRunningCommand({ processId, processExecutionPath, processOutput, commandConfiguration, isError }));
 
 	useEffect(() => {
 		desktopApi.receive('log', (event, logObj) => {
@@ -70,8 +72,8 @@ export function CommandConsoleComponent() {
 				<Accordion key={runningCommand.name}>
 					<AccordionSummary
 						expandIcon={<ExpandMoreIcon />}
-						// aria-controls="panel1a-content"
-						// id="panel1a-header"
+					// aria-controls="panel1a-content"
+					// id="panel1a-header"
 					>
 						<Typography>{runningCommand.name}</Typography>
 						<button onClick={() => killProcess(runningCommand.processId)}>KILL PROCESS</button>
@@ -80,8 +82,11 @@ export function CommandConsoleComponent() {
 						<Typography>
 							{runningCommand?.logObjects?.map(logObject => (
 								<div>
-									<span style={{ color: 'red' }}>{logObject?.processExecutionPath}</span>
-									<span>{logObject?.processOutput}</span>
+									<span >
+										<span style={logObject?.isError ? { color: 'red' } : { color: 'green' }}>{`[${logObject?.processExecutionPath}:`}</span>
+										<span style={logObject?.isError ? { color: 'red' } : { color: '#21DEED' }}> {`${logObject?.commandConfiguration?.name}]`}</span>
+										<span style={logObject?.isError ? { color: 'red' } : {}}>{logObject?.processOutput}</span>
+									</span>
 								</div>
 							))}
 						</Typography>
