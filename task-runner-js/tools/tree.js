@@ -11,7 +11,7 @@ module.exports = class Tree {
 	}
 
 	async executeRootCommand() {
-		return await this.root.execute();
+		return this.root.execute();
 	}
 
 	preparePipeForTaskExecution(siblingNodes = this.collectEndNodes()) {
@@ -27,20 +27,22 @@ module.exports = class Tree {
 	convertCommandToFunction(node) {
 		const commandConfiguration = node.value;
 		if (isConsoleCommand(node.value)) {
-			return async () => await runConsoleCommand(
-				commandConfiguration.path,
-				commandConfiguration,
-				this?.settings?.handleOutputMessage,
-				this?.settings?.handleOutputError
-			);
+			return async () => {
+				return runConsoleCommand(
+					commandConfiguration.path,
+					commandConfiguration,
+					this?.settings?.handleOutputMessage,
+					this?.settings?.handleOutputError
+				);
+			}
 		}
 		if (commandConfiguration.shouldRunCommandsInParallel === true) {
-			return async () => await Promise.all(node.children.map(childNode => childNode.execute()));
+			return async () => Promise.all(node.children.map(childNode => childNode.execute()));
 		}
 		return async () => node.children
 			.map(childNode => childNode.execute)
 			.reduce(async (accumulatorPromise, executeFunction) => {
-				return accumulatorPromise.then(() => executeFunction()).catch(() => { console.log('Error') });
+				return accumulatorPromise.then(() => executeFunction()).catch(error => { console.log('Error', error) });
 			}, Promise.resolve());
 	}
 

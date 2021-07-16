@@ -17,7 +17,7 @@ module.exports = async function runConsoleCommand(
 		const installPackagesProcess = spawnProcess(path, command, parameters);
 		installPackagesProcess.stdout.on('data', processOutput => { handleOutputMessage({ processOutput, path, commandConfiguration }); });
 		installPackagesProcess.stderr.on('data', processOutput => { handleOutputError({ processOutput, path, commandConfiguration }); });
-		installPackagesProcess.once('exit', () => { resolve(); });
-		installPackagesProcess.once('error', () => { reject(); });
+		installPackagesProcess.once('exit', (code, signal) => { resolve({ code, signal }); });
+		installPackagesProcess.once('error', (error) => { reject(error); });
 	});
 }
