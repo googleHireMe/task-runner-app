@@ -65,6 +65,9 @@
 					"name": "gitPull"
 				},
 				{
+					"name": "openInVsCode"
+				},
+				{
 					"name": "npmInstall"
 				},
 				{
@@ -81,6 +84,9 @@
 				},
 				{
 					"name": "gitPull"
+				},
+				{
+					"name": "openInVsCode"
 				},
 				{
 					"name": "npmInstall"
@@ -101,6 +107,9 @@
 					"name": "gitPull"
 				},
 				{
+					"name": "openInVsCode"
+				},
+				{
 					"name": "npmInstall"
 				},
 				{
@@ -117,6 +126,9 @@
 				},
 				{
 					"name": "gitPull"
+				},
+				{
+					"name": "openInVsCode"
 				},
 				{
 					"name": "npmInstall"
